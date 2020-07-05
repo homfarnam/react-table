@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, Fragment } from 'react';
 import {
   Container,
 } from 'reactstrap';
@@ -58,6 +58,19 @@ const App = () => {
       {
         Header: 'To',
         accessor: 'to',
+      },
+      {
+        Header: 'Tx Type',
+        accessor: 'type',
+      },
+      {
+        Header: 'Info',
+        // accessor: 'info.symbol info.value',
+        accessor: 'info',
+        Cell: ( {cell: {value}} ) => {
+         
+          return <span>{value.value} {value.symbol}</span>
+           }
       },
       // {
       //   Header: 'Hemisphere',

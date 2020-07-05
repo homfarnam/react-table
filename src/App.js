@@ -1,135 +1,106 @@
-import React, {useEffect, useState, useMemo} from 'react'
-import {useTable} from 'react-table'
+import React, { useEffect, useState, useMemo } from 'react';
+import {
+  Container,
+} from 'reactstrap';
+import TableContainer from './TableContainer';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { SelectColumnFilter } from './filters';
 import axios from 'axios'
 
+const App = () => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const doFetch = async () => {
+      const response = await fetch('https://api.fsn365.com/txn');
+      const body = await response.json();
+      const contacts = body.data.data;
+      console.log(contacts);
+      setData(contacts);
+    };
+    doFetch();
+  }, []);
 
 
-function App() {
+ 
 
-    const [posts, setPosts] = useState([])
+  
 
-    const fetchData = useEffect(() => {
-        const url = 'https://api.fsn365.com/txn'
-        axios.get(url)
-        .then(res => {
-            setPosts(res.data.data.data)
-        })
-        // .then(console.log(posts))
-        .catch(err => {
-            console.log(err)
-        })
-
-    
-
-    })
-    setInterval(fetchData, 6000)
-    
-    
-
-    
-
-    const columns = useMemo(() => [
-        {
-            Header: 'Tx Hash',
-            accessor: 'hash', // accessor is the "key" in the data
-        }, {
-            Header: 'Block',
-            accessor: 'bk'
-        }, {
-            Header: 'from',
-            accessor: 'from'
-        }, 
-        {
-            Header: 'Time Stamp',
-            accessor: 'timestamp',
-            Cell: ({cell:{value}})=>{
-                console.log(value);
-                const date = new Intl.DateTimeFormat('en-US').format(value*1000);
-                return <span>{date}</span>
-            }
-        },
-        {
-            Header: 'to',
-            accessor: 'to'
-        }
-    ], [])
-
-   
-    const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        rows,
-        prepareRow
-    } = useTable({columns, data:posts})
-
-    if (posts.length === 0) {
-        return null;
-     } 
-
-    return (
+  const columns = useMemo(
+    () => [
       
-        <div>
-         
-         
+      {
+        Header: 'Tx hash',
+        accessor: 'hash',
+        // disableSortBy: true,
+        // Filter: SelectColumnFilter,
+        filter: 'equals',
         
-            <table {...getTableProps()}
-                style={
-                    {border: 'solid 1px blue'}
-            }>
-                <thead> {
-                    headerGroups.map(headerGroup => (
-                        <tr {...headerGroup.getHeaderGroupProps()}>
-                            {
-                            headerGroup.headers.map(column => (
-                                <th {...column.getHeaderProps()}
-                                    style={
-                                        {
-                                            borderBottom: 'solid 3px red',
-                                            background: 'aliceblue',
-                                            color: 'black',
-                                            fontWeight: 'bold'
-                                        }
-                                }>
-                                    {
-                                    column.render('Header')
-                                } </th>
-                            ))
-                        } </tr>
-                    ))
-                } </thead>
-                <tbody {...getTableBodyProps()}>
-                    {
-                    rows.map(row => {
-                        prepareRow(row)
-                        return (
-                            <tr {...row.getRowProps()}>
-                                {
-                                row.cells.map(cell => {
-                                    return (
-                                        <td {...cell.getCellProps()}
-                                            style={
-                                                {
-                                                    padding: '10px',
-                                                    border: 'solid 1px gray',
-                                                    background: 'papayawhip'
-                                                }
-                                        }>
-                                            {
-                                            cell.render('Cell')
-                                        } </td>
-                                    )
-                                })
-                            } </tr>
-                        )
-                    })
-                } </tbody>
-            </table>
-           
-        </div>
+      },
+      {
+        Header: 'Time',
+        accessor: 'timestamp',
+        Cell: ( {cell: {value}} ) => {
+          const date = new Intl.DateTimeFormat('en-US').format(value * 1000);
+          return <span>{date}</span>
+           }
+      },
+      {
+        Header: 'Block',
+        accessor: 'bk',
+        show:false
+      },
+      
+      {
+        Header: 'From',
+        accessor: 'from',
+      },
+      {
+        Header: 'To',
+        accessor: 'to',
+      },
+      // {
+      //   Header: 'Hemisphere',
+      //   accessor: (values) => {
+      //     const { latitude, longitude } = values.location.coordinates;
+      //     const first = Number(latitude) > 0 ? 'N' : 'S';
+      //     const second = Number(longitude) > 0 ? 'E' : 'W';
+      //     return first + '/' + second;
+      //   },
+      //   disableSortBy: true,
+      //   Filter: SelectColumnFilter,
+      //   filter: 'equals',
+      //   Cell: ({ cell }) => {
+      //     const { value } = cell;
 
+      //     const pickEmoji = (value) => {
+      //       let first = value[0]; // N or S
+      //       let second = value[2]; // E or W
+      //       const options = ['⇖', '⇗', '⇙', '⇘'];
+      //       let num = first === 'N' ? 0 : 2;
+      //       num = second === 'E' ? num + 1 : num;
+      //       return options[num];
+      //     };
 
-    )
-}
+      //     return (
+      //       <div style={{ textAlign: 'center', fontSize: 18 }}>
+      //         {pickEmoji(value)}
+      //       </div>
+      //     );
+      //   },
+      // },
+    ],
+    []
+  );
 
-export default App
+  return (
+    <Container style={{ marginTop: 100 }}>
+      <TableContainer
+        columns={columns}
+        data={data}
+      />
+    </Container>
+  );
+};
+
+export default App;

@@ -1,0 +1,6 @@
+.cell-value {
+    text-overflow: ellipsis;
+    max-width: 59px;
+    overflow: hidden;
+    white-space: nowrap;
+}

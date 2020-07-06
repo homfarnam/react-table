@@ -55,7 +55,7 @@ const TableContainer = ({ columns, data, renderRowSubComponent }) => {
 
   return (
     <Fragment>
-      <Table bordered hover {...getTableProps()}>
+      <Table className='data-table' bordered hover {...getTableProps()}>
         <thead >
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -136,7 +136,7 @@ const TableContainer = ({ columns, data, renderRowSubComponent }) => {
             value={pageSize}
             onChange={onChangeInSelect}
           >
-            >
+            
             {[10, 20, 30, 40, 50].map((pageSize) => (
               <option key={pageSize} value={pageSize}>
                 Show {pageSize}

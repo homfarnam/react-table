@@ -4,24 +4,42 @@ import {
 } from 'reactstrap';
 import TableContainer from './TableContainer';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { SelectColumnFilter } from './filters';
+import './style.css'
+import { SelectColumnFilter,DefaultColumnFilter } from './filters';
 import axios from 'axios'
+import UTCTime from "./components/UTCTime/index";
+
 
 const App = () => {
   const [data, setData] = useState([]);
 
-  useEffect(() => {
-    const doFetch = async () => {
-      const response = await fetch('https://api.fsn365.com/txn');
-      const body = await response.json();
-      const contacts = body.data.data;
-      console.log(contacts);
-      setData(contacts);
-    };
-    doFetch();
-  }, []);
+  // useEffect(() => {
+  //   const doFetch = async () => {
+  //     const response = await fetch('https://api.fsn365.com/txn');
+  //     const body = await response.json();
+  //     const contacts = body.data.data;
+  //     console.log(contacts);
+  //     setData(contacts);
+  //   };
+  //   doFetch();
+  // }, []);
 
 
+
+  const fetchData = useEffect(() => {
+    const url = 'https://api.fsn365.com/txn'
+    axios.get(url)
+    .then(res => {
+        setData(res.data.data.data)
+    })
+    .then(console.log(data))
+    .catch(err => {
+        console.log(err)
+    })
+
+
+})
+setInterval(fetchData, 5000)
  
 
   
@@ -36,24 +54,35 @@ const App = () => {
         // Filter: SelectColumnFilter,
         filter: 'equals',
         
+        
       },
       {
         Header: 'Time',
         accessor: 'timestamp',
-        Cell: ( {cell: {value}} ) => {
-          const date = new Intl.DateTimeFormat('en-US').format(value * 1000);
-          return <span>{date}</span>
+        Cell:
+         ( {cell: {value}} ) => {
+          // const date = new Intl.DateTimeFormat('en-US').format(value * 1000);
+          return <UTCTime time={value} />
            }
       },
       {
         Header: 'Block',
         accessor: 'bk',
-        show:false
       },
       
       {
         Header: 'From',
         accessor: 'from',
+      },
+      {
+        Header: 'Direction',
+        accessor: '',
+        sortable: false,
+        filterable: false,
+        Cell: () => {
+         
+          return <span className='right-emoji'> {'=>'} </span>
+           }
       },
       {
         Header: 'To',
@@ -107,7 +136,7 @@ const App = () => {
   );
 
   return (
-    <Container style={{ marginTop: 100 }}>
+    <Container style={{ marginTop: 100, position: 'relative',right:190 }}>
       <TableContainer
         columns={columns}
         data={data}

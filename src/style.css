@@ -1,6 +1,15 @@
 .cell-value {
     text-overflow: ellipsis;
-    max-width: 59px;
+    max-width: 79px;
     overflow: hidden;
     white-space: nowrap;
+}
+
+.right-emoji {
+    text-align: center !important;
+    margin-left: 40%;
+}
+
+.data-table {
+    width: 139% !important;
 }

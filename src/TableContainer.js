@@ -32,7 +32,7 @@ const TableContainer = ({ columns, data, renderRowSubComponent }) => {
       columns,
       data,
       defaultColumn: { Filter: DefaultColumnFilter },
-      initialState: { pageIndex: 0, pageSize: 10 },
+      initialState: { pageIndex: 0, pageSize: 976953 },
     },
     useFilters,
     useSortBy,

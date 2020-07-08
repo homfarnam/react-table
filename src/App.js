@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, Fragment } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   Container,
 } from 'reactstrap';
@@ -13,33 +13,38 @@ import UTCTime from "./components/UTCTime/index";
 const App = () => {
   const [data, setData] = useState([]);
 
-  // useEffect(() => {
-  //   const doFetch = async () => {
-  //     const response = await fetch('https://api.fsn365.com/txn');
-  //     const body = await response.json();
-  //     const contacts = body.data.data;
-  //     console.log(contacts);
-  //     setData(contacts);
-  //   };
-  //   doFetch();
-  // }, []);
-
-
+  const [total,setTotal] = useState(0)
+  
 
   const fetchData = useEffect(() => {
     const url = 'https://api.fsn365.com/txn'
-    axios.get(url)
+
+    const params =  {
+      // page: total*10,
+      // order: 'asc', // 'asc'
+      // size: total,
+
+      page: 100,
+      size: 1000
+    }
+
+    axios.get(url,{params})
+    // .then(console.log(total))
     .then(res => {
         setData(res.data.data.data)
+        setTotal(res.data.data.total)
     })
+    // .then(console.log(total))
     .then(console.log(data))
     .catch(err => {
         console.log(err)
     })
 
+    
 
 })
-setInterval(fetchData, 5000)
+// setInterval(fetchData, 1000)
+setTimeout(fetchData, 1000);
  
 
   
@@ -51,7 +56,7 @@ setInterval(fetchData, 5000)
         Header: 'Tx hash',
         accessor: 'hash',
         // disableSortBy: true,
-        // Filter: SelectColumnFilter,
+        Filter: DefaultColumnFilter,
         filter: 'equals',
         
         
@@ -101,36 +106,6 @@ setInterval(fetchData, 5000)
           return <span>{value.value} {value.symbol}</span>
            }
       },
-      // {
-      //   Header: 'Hemisphere',
-      //   accessor: (values) => {
-      //     const { latitude, longitude } = values.location.coordinates;
-      //     const first = Number(latitude) > 0 ? 'N' : 'S';
-      //     const second = Number(longitude) > 0 ? 'E' : 'W';
-      //     return first + '/' + second;
-      //   },
-      //   disableSortBy: true,
-      //   Filter: SelectColumnFilter,
-      //   filter: 'equals',
-      //   Cell: ({ cell }) => {
-      //     const { value } = cell;
-
-      //     const pickEmoji = (value) => {
-      //       let first = value[0]; // N or S
-      //       let second = value[2]; // E or W
-      //       const options = ['⇖', '⇗', '⇙', '⇘'];
-      //       let num = first === 'N' ? 0 : 2;
-      //       num = second === 'E' ? num + 1 : num;
-      //       return options[num];
-      //     };
-
-      //     return (
-      //       <div style={{ textAlign: 'center', fontSize: 18 }}>
-      //         {pickEmoji(value)}
-      //       </div>
-      //     );
-      //   },
-      // },
     ],
     []
   );
